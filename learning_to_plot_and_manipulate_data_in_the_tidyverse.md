@@ -1,4 +1,4 @@
-# Learning to plot and manipulate data in the tidyverse
+# Plotting and manipulating data with the tidyverse
 
 **[Mark Stenglein](https://www.stengleinlab.org/)**
 **March, 2021**
