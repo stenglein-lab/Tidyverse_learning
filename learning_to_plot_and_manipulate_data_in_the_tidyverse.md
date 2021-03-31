@@ -402,12 +402,14 @@ df_with_a_new_column <- mutate(df, TSPREAD = TMAX - TMIN)
 
 Or we could create a new column that contained the global average of yearly averages.  We could use this new column to answer the question of how the average temperature in each year compares to the global average of all the years of recorded data.  
 
+```
 df_by_year <- mutate(df_by_year, 
                      global_TAVG = mean(yearly_TAVG),
                      global_TMAX = mean(yearly_TMAX),
                      global_TMIN = mean(yearly_TMIN))
+```
 
-Here, we are using mean() to calculate mean values within the mutate function.  Because we have not grouped the data, this does not reduce the number of observations as happened above when using group_by() and summarize() to create df_by_year.  This is a subtle but important difference.
+Here, we are using mean() to calculate mean values using the mutate function.  Because we have not grouped the data, this does not reduce the number of observations as happened above when using group_by() and summarize() to create df_by_year.  This is a subtle but important difference.
 
 We are also over-writing the df_by_year dataframe with the output of the mutate function, which is a data frame with three new columns.  We could also give this df a new name. 
 
