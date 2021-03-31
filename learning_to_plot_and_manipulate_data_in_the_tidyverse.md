@@ -11,12 +11,12 @@ In this exercise, we will import data into R and use ggplot2 functions to plot i
 
 The data we will be analyzing represents historical weather data from Fort Collins, Colorado.
 
-This data was downloaded from the US Government's [National Centers for Environmental Information](https://www.ncdc.noaa.gov/).  It contains montly average temperatures and precipitation data captured at a weather station in Fort Collins from 1893 - 2020. 
+This data was downloaded from the US Government's [National Centers for Environmental Information](https://www.ncdc.noaa.gov/).  It contains montly average temperatures and precipitation data captured at a weather station in Fort Collins from 1893 - early 2021. 
 
 
 #### Connect to the cctsi-103 server to use RStudio Server
 
-You can use [RStudio Desktop](https://www.rstudio.com/products/rstudio/) as a stand alone app on your computer or you can use [RStudio Server](https://www.rstudio.com/products/rstudio/#rstudio-server) hosted on a server via a web interface.  For class today we will be using RStudio Server on the cctsi-103.cvmbs.colostate.edu server.  To connect to this server, you will need to either be on the CSU campus or connected to the CSU VPN using the Pulse Secure desktop vpn client.  
+You can use [RStudio Desktop](https://www.rstudio.com/products/rstudio/) as a stand alone app on your computer or you can use [RStudio Server](https://www.rstudio.com/products/rstudio/#rstudio-server) hosted on a server via a web interface.  For class today we will be using RStudio Server on the `cctsi-103.cvmbs.colostate.edu` server.  To connect to this server, you will need to either be on the CSU campus or connected to the CSU VPN using the Pulse Secure desktop vpn client.  
 
 You could also do this exercise on your own computer but it'll be necessary to have [RStudio Desktop installed](https://www.rstudio.com/products/rstudio/download/#download) and in R the [tidyverse package](https://ggplot2.tidyverse.org/#installation).  
 
@@ -24,7 +24,7 @@ Open a browser and enter this address in the address bar: `http://cctsi-103.cvmb
 
 Enter the login credentials that I tell you to use.
 
-If you are running this exercise as a stand-alone with RStudio Desktop, you will need [the weather data file]() on your computer and can ignore the above instructions re: connecting to the cctsi-103 server.
+If you are running this exercise as a stand-alone with RStudio Desktop, you will need [the weather data file](./FoCo_weather_data.csv) on your computer and can ignore the above instructions re: connecting to the cctsi-103 server.
 
 
 #### Creating a new script file and initializing the R environment 
@@ -34,16 +34,17 @@ First, you'll need to create an R script in RStudioServer and initialize the R e
 To do this:
 
 - select `File->New File->R Script`.  A new blank R script file should appear.
-- save this file, by selecting `File->Save File` and give the file a name something like `your_name_weather_script.R` (replace `your_name` with your name).
+- save this file, by selecting `File->Save` and give the file a name something like `your_name_weather_script.R` (replace `your_name` with your name).
 - make sure the R session is 'working' in the same directory as your script by selecting `Session->Set Working Directory->To Source File Location`.  Many problems experienced by folks new to R relate to the R session not having the same working directory as their data files.  [See this post for more information](https://www.stat.ubc.ca/~jenny/STAT545A/block01_basicsWorkspaceWorkingDirProject.html#working-directory)
 
 
 #### Load the tidyverse libraries 
 
-To use the [tidyverse](https://www.tidyverse.org/) functions, including those in ggplot2, you'll need to load the tidyverse libraries in your R script.  To to this, type this line at the top of your R script file and press `Cmd-Return` (in Mac OSX) or `Ctrl-Enter` (in Windows).
+To use the [tidyverse](https://www.tidyverse.org/) functions, including those in ggplot2, you'll need to load the tidyverse libraries into your R environment.  To do this, type (or copy-paste) these lines at the top of your R script file and press `Cmd-Return` (in Mac OSX) or `Ctrl-Enter` (in Windows) to run them.  We'll need the [lubridate library](https://lubridate.tidyverse.org/) to work with date data.
 
 ```
 library(tidyverse)
+library(lubridate)
 ```
 
 This should produce output like:
@@ -60,7 +61,8 @@ x dplyr::lag()    masks stats::lag()
 
 The conflicts section here are just telling you that there are functions in the tidyverse (filter() and lag()) that mask (hide) functions with the same name from the stats package.  That's OK.  
 
-Using the library() function loads a particular library into R.  If a library is not already installed on your computer, you will get an error message like `Error in library(tidyverse) : there is no package called ‘tidyverse’`.  In this case, you will need to install the library, using the `install.packages()` function.  For example: `install.packages("tidyverse")`.
+Using the library() function loads a particular library into R.  If a library is not already installed on your computer, you will get an error message like `Error in library(tidyverse) : there is no package called ‘tidyverse’`.  In this case, you will need to install the library, using the `install.packages()` function.  For example: `install.packages("tidyverse")`. You only need to install packages once, but you need to load them every time you want to use them.
+
 
 #### Importing the weather data
 
@@ -112,7 +114,7 @@ So run this command to create a plot:
 ggplot()
 ```
 
-Nothing happened!!  That's because you've told R to create a plot but you told it nothing about the plot you want to create: you haven't specified a data source, for instance.  Let's specify the data source.
+Nothing happened!!  Well actually something happened: a grey empty box appeared in the plots pane in the bottom right corner. That's because you've told R to create a plot but you told it nothing about the plot you want to create so it just created a blank plot. You haven't specified a data source, for instance.  Let's specify the data source.
 
 Do this by typing and running:
 
@@ -120,9 +122,9 @@ Do this by typing and running:
 ggplot(data=df) 
 ```
 
-Now we've told R that we want to plot the data in the df dataframe, but we've not told it anything about *how* we want to portray the data.  
+Now we've told R that we want to plot the data in the df dataframe, but we've still not told it anything about *how* we want to portray the data.  
 
-To add additional layers to a plot in ggplot2, you simply use the `+` symbol to add a layer in the form of a [ggplot2 function](https://ggplot2.tidyverse.org/reference/index.html).   Let's start out by adding a simple scatter plot layer using the `[geom_point](https://ggplot2.tidyverse.org/reference/geom_point.html)` geometry.
+To add additional layers to a plot in ggplot2, you simply use the `+` symbol to add a layer in the form of a [ggplot2 function](https://ggplot2.tidyverse.org/reference/index.html).   Let's start out by adding a simple scatter plot layer using the [geom_point](https://ggplot2.tidyverse.org/reference/geom_point.html) geometry.
 
 ```
 ggplot(data=df) +
@@ -131,11 +133,11 @@ ggplot(data=df) +
 
 The `+` symbol can be in the middle of a line between two ggplot2 functions or at the end of a line (doesn't work at the beginning of a line). 
 
-Note that in the above example, we've specified an *aesthetic mapping* using the `mapping = aes()` construction.  "Aesthetic mappings describe how variables in the data are mapped to visual properties" in the plot [see here for more information](https://ggplot2.tidyverse.org/reference/aes.html). 
+Note that in the above example, we've specified an *aesthetic mapping* using the `mapping = aes()` construction.  "Aesthetic mappings describe how variables in the data are mapped to visual properties" in the plot. [See here for more information](https://ggplot2.tidyverse.org/reference/aes.html). 
 
-In this case, we are defining the x and y positions of the data points as one of their visual properties.  We are telling ggplot to map the DATE variable to the x-axis and the TAVG (average monthly temperate) to the y axis.
+In this case, we are defining the x and y positions of the data points as one of their visual properties.  We are telling ggplot to map the DATE variable to the x-axis and the TAVG (average monthly temperate) to the y axis.  DATE and TAVG are the names of two of the columns of data in our df data frame.
 
-You should see a plot showing all 1518 data point in this data set plotted as individual points.
+You should see a plot showing the 1518 data point in this data set plotted as individual points.
 
 This is fine, but let's make it a little fancier.  Let's color the data points differently.  One way to do this is to specify a color for the points outside of the aes() aesthetic mapping:
 
@@ -164,10 +166,10 @@ Enter and run the following lines into your R script:
 ```
 ggplot(data=df) +
   geom_point(mapping = aes(x=DATE, y=TAVG, color=TAVG))  +
-  facet_wrap(MONTH)
+  facet_wrap(~MONTH)
 ```
 
-Note that again we have added another feature to the plot using the `+` symbol.
+Note that again we have added another feature to the plot using the `+` symbol.  Also note the tilde character `~` before the variable name MONTH.
 
 You should now see 12 plots representing the average temperature for each month.  Now we've colored the points in each plot by the average temperature too. 
 
@@ -179,7 +181,7 @@ Note that the x and y axis labels are not great: the y axis is labeled TAVG, for
 ```
 ggplot(data=df) +
   geom_point(mapping = aes(x=DATE, y=TAVG, color=TAVG))  +
-  facet_wrap(MONTH) +
+  facet_wrap(~MONTH) +
   xlab("") +
   ylab("Average monthly temperature in Fort Collins (F)")
 ```
@@ -213,7 +215,7 @@ ggplot(data=df) +
   ylab("Average monthly temperature in Fort Collins (F)")
 ```
 
-Note that we just commented out the geom_point() line to avoid plotting it in this situation.  
+Note that we just commented out the geom_point() line to avoid plotting the points in this instance.  
 
 With the y axis focused on a smaller range, you can see that the average monthly temperature has increased in Fort Collins from ~46.5F in 1900 to ~51F today.  The gray shaded area represents the 95% confidence interval, indicating that there is some uncertainty in this estimate.
 
@@ -233,14 +235,23 @@ ggplot(data=df) +
   xlab("") 
 ```
 
-What's the hottest month in Fort Collins?  
+What's the hottest month in Fort Collins?  What months have the most variable or least variable maximum and minimum temperatures?
 
 
-#### Exercise: create a plot that shows the average monthly precipitation in Fort Collins.
+##### [Time permitting] Exercise 1 
+
+Create a plot that shows the average monthly precipitation in Fort Collins.
 
 Our data frame contains a variable (column) named PRCP, which captures average monthly precipitation in inches.
 
-Create a plot that will tell you what is the rainiest month?  How many inches does it rain on average in that month? 
+Which is the rainiest month in Fort Collins?  How many inches does it rain on average in that month? 
+
+##### [Time permitting] Exercise 2 
+
+Use [geom_jitter](https://ggplot2.tidyverse.org/reference/geom_jitter.html) instead of geom_boxplot in the above code.  Jitter can be used to represent distributions of data points, especialy when they have identical values for one of their positional variables (all the x positions for the data points for each month would totally overlap if you used geom_point in our example).  
+
+You could also try [geom_violin](https://ggplot2.tidyverse.org/reference/geom_violin.html) to make a violin plot, or change the [alpha aesthetic](https://ggplot2.tidyverse.org/reference/aes_colour_fill_alpha.html#alpha) to add transparency to be able to see overlapping points.
+
 
 
 #### Saving a plot
